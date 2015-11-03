@@ -86,10 +86,15 @@ public abstract class AbstractGeoIPDissector extends Dissector {
     boolean wantPostalCode = false;
     boolean wantLocationLatitude = false;
     boolean wantLocationLongitude = false;
+    boolean wantLocationTimezone = false;
 
     @Override
     public EnumSet<Casts> prepareForDissect(final String inputname, final String outputname) {
-        String name = outputname.substring(inputname.length() + 1);
+        String name = outputname;
+        if (!inputname.isEmpty()) {
+            name = outputname.substring(inputname.length() + 1);
+        }
+
         if ("country.name".equals(name)) {
             wantCountryName = true;
             return Casts.STRING_ONLY;
@@ -122,23 +127,11 @@ public abstract class AbstractGeoIPDissector extends Dissector {
             wantLocationLongitude = true;
             return Casts.STRING_OR_DOUBLE;
         }
-        return null;
-    }
-
-    private LookupService lookupService;
-
-    @Override
-    public void prepareForRun() {
-        // A File object pointing to your GeoIP2 or GeoLite2 database
-        File database = new File(databaseFileName);
-
-        // This creates the DatabaseReader object, which should be reused across lookups.
-        try {
-            lookupService = new LookupService(databaseFileName,
-                    LookupService.GEOIP_MEMORY_CACHE | LookupService.GEOIP_CHECK_CACHE);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if ("location.timezone".equals(name)) {
+            wantLocationTimezone = true;
+            return Casts.STRING_ONLY;
         }
+        return null;
     }
 
     // --------------------------------------------

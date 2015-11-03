@@ -35,7 +35,7 @@ import static org.junit.Assert.assertEquals;
 public class TestGeoIPDissector {
     public static class MyRecord {
 
-        private final Map<String, String> results = new HashMap<>(32);
+        final Map<String, String> results = new HashMap<>(32);
 
         @Field({
                 "STRING:country.name",
@@ -64,7 +64,7 @@ public class TestGeoIPDissector {
         public TestGeoIPParser() {
             super(MyRecord.class);
             GeoIPDissector dissector = new GeoIPDissector();
-            dissector.initializeFromSettingsParameter("/usr/share/GeoIP/GeoIPCity.dat"); // FIXME: Get test file !!
+            dissector.initializeFromSettingsParameter("/usr/share/GeoIP/GeoIPCity.dat");
             addDissector(dissector);
             setRootType("IP");
         }
@@ -74,7 +74,7 @@ public class TestGeoIPDissector {
         public TestGeoIP2Parser() {
             super(MyRecord.class);
             GeoIP2Dissector dissector = new GeoIP2Dissector();
-            dissector.initializeFromSettingsParameter("/usr/share/GeoIP/GeoIPCity.dat");
+            dissector.initializeFromSettingsParameter("/home/niels/tmp/GeoLite2-City.mmdb");
             addDissector(dissector);
             setRootType("IP");
         }
@@ -92,31 +92,32 @@ public class TestGeoIPDissector {
         record = new MyRecord();
     }
 
-    private void commonValidations(MyRecord record){
-        assertEquals("STRING:country.name",        "", record.getValue("STRING:country.name"));
-        assertEquals("STRING:country.iso",         "", record.getValue("STRING:country.iso"));
-        assertEquals("STRING:city.name",           "", record.getValue("STRING:city.name"));
-        assertEquals("STRING:postal.code",         "", record.getValue("STRING:postal.code"));
-        assertEquals("STRING:location.latitude",   "", record.getValue("STRING:location.latitude"));
-        assertEquals("STRING:location.longitude",  "", record.getValue("STRING:location.longitude"));
-    }
-
     @Test
     public void testGeoIP1() throws Exception {
         record.clear();
         parser1.parse(record, "80.100.47.45");
-        commonValidations(record);
+
+        System.out.print(record.results);
+        assertEquals("STRING:country.name",        "Netherlands", record.getValue("STRING:country.name"));
+        assertEquals("STRING:country.iso",         "NL", record.getValue("STRING:country.iso"));
+        assertEquals("STRING:city.name",           null, record.getValue("STRING:city.name"));
+        assertEquals("STRING:postal.code",         null, record.getValue("STRING:postal.code"));
+        assertEquals("STRING:location.latitude",   "52.3667", record.getValue("STRING:location.latitude"));
+        assertEquals("STRING:location.longitude",   "4.899994", record.getValue("STRING:location.longitude"));
     }
 
-    // This one doesn't work yet because I do not have a test file
-    @Ignore
     @Test
     public void testGeoIP2() throws Exception {
         record.clear();
         parser2.parse(record, "80.100.47.45");
-        commonValidations(record);
-        assertEquals("STRING:subdivision.name",    "", record.getValue("STRING:subdivision.name"));
-        assertEquals("STRING:subdivision.iso",     "", record.getValue("STRING:subdivision.iso"));
+        assertEquals("STRING:country.name",        "Netherlands", record.getValue("STRING:country.name"));
+        assertEquals("STRING:country.iso",         "NL", record.getValue("STRING:country.iso"));
+        assertEquals("STRING:subdivision.name",    null, record.getValue("STRING:subdivision.name"));
+        assertEquals("STRING:subdivision.iso",     null, record.getValue("STRING:subdivision.iso"));
+        assertEquals("STRING:city.name",           null, record.getValue("STRING:city.name"));
+        assertEquals("STRING:postal.code",         null, record.getValue("STRING:postal.code"));
+        assertEquals("STRING:location.latitude",   "52.3667", record.getValue("STRING:location.latitude"));
+        assertEquals("STRING:location.longitude",   "4.9", record.getValue("STRING:location.longitude"));
     }
 
 

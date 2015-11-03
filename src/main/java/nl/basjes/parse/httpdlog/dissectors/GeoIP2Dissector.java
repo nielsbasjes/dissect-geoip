@@ -64,29 +64,26 @@ public class GeoIP2Dissector extends AbstractGeoIPDissector {
             return;
         }
 
-        if (response != null) {
-            if (wantCountryIso || wantCountryName) {
-                Country country = response.getCountry();
-                if (country != null) {
-                    if (wantCountryName) {
-                        parsable.addDissection(inputname, "STRING", "country.name", country.getName());
-                    }
-                    if (wantCountryIso) {
-                        parsable.addDissection(inputname, "STRING", "country.iso", country.getIsoCode());
-                    }
+        if (response == null) {
+            return;
+        }
+            Country country = response.getCountry();
+            if (country != null) {
+                if (wantCountryName) {
+                    parsable.addDissection(inputname, "STRING", "country.name", country.getName());
+                }
+                if (wantCountryIso) {
+                    parsable.addDissection(inputname, "STRING", "country.iso", country.getIsoCode());
                 }
             }
 
-            if (wantSubdivisionName || wantSubdivisionIso) {
-
-                Subdivision subdivision = response.getMostSpecificSubdivision();
-                if (subdivision != null) {
-                    if (wantSubdivisionName) {
-                        parsable.addDissection(inputname, "STRING", "subdivision.name", subdivision.getName());
-                    }
-                    if (wantSubdivisionIso) {
-                        parsable.addDissection(inputname, "STRING", "subdivision.iso", subdivision.getIsoCode());
-                    }
+            Subdivision subdivision = response.getMostSpecificSubdivision();
+            if (subdivision != null) {
+                if (wantSubdivisionName) {
+                    parsable.addDissection(inputname, "STRING", "subdivision.name", subdivision.getName());
+                }
+                if (wantSubdivisionIso) {
+                    parsable.addDissection(inputname, "STRING", "subdivision.iso", subdivision.getIsoCode());
                 }
             }
 
@@ -104,19 +101,18 @@ public class GeoIP2Dissector extends AbstractGeoIPDissector {
                 }
             }
 
-            if (wantLocationLatitude || wantLocationLongitude) {
-
-                Location location = response.getLocation();
-                if (location != null) {
-                    if (wantLocationLatitude) {
-                        parsable.addDissection(inputname, "STRING", "location.latitude", Double.toString(location.getLatitude()));
-                    }  // 44.9733
-                    if (wantLocationLongitude) {
-                        parsable.addDissection(inputname, "STRING", "location.longitude", Double.toString(location.getLongitude()));
-                    } // -93.2323
+            Location location = response.getLocation();
+            if (location != null) {
+                if (wantLocationLatitude) {
+                    parsable.addDissection(inputname, "STRING", "location.latitude", Double.toString(location.getLatitude()));
+                }
+                if (wantLocationLongitude) {
+                    parsable.addDissection(inputname, "STRING", "location.longitude", Double.toString(location.getLongitude()));
+                }
+                if (wantLocationTimezone) {
+                    parsable.addDissection(inputname, "STRING", "location.timezone", location.getTimeZone());
                 }
             }
-        }
     }
     // --------------------------------------------
 
