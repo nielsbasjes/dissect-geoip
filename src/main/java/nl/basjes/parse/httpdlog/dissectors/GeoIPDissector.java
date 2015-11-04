@@ -37,8 +37,7 @@ public class GeoIPDissector extends AbstractGeoIPDissector {
 
         // This creates the DatabaseReader object, which should be reused across lookups.
         try {
-            lookupService = new LookupService(databaseFileName,
-                    LookupService.GEOIP_MEMORY_CACHE | LookupService.GEOIP_CHECK_CACHE);
+            lookupService = new LookupService(databaseFileName, LookupService.GEOIP_MEMORY_CACHE);
         } catch (IOException e) {
             e.printStackTrace();
         }

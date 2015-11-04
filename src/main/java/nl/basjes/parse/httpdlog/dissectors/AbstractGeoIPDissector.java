@@ -16,17 +16,12 @@
  */
 package nl.basjes.parse.httpdlog.dissectors;
 
-import com.maxmind.geoip.Country;
-import com.maxmind.geoip.Location;
-import com.maxmind.geoip.LookupService;
 import nl.basjes.parse.core.Casts;
 import nl.basjes.parse.core.Dissector;
 import nl.basjes.parse.core.Parsable;
 import nl.basjes.parse.core.ParsedField;
 import nl.basjes.parse.core.exceptions.DissectionFailure;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
