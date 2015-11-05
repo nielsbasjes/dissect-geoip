@@ -65,13 +65,13 @@ public class TestGeoIPDissectorPig {
 
         assertEquals(2, out.size());
         assertEquals(tuple(
-                    "10.10.10.10",
-                    "United States",
-                    "US",
-                    "38.0",
-                    "-97.0"
-            ).toDelimitedString("><#><"),
-            out.get(0).toDelimitedString("><#><"));
+                "178.208.38.98",
+                "Netherlands",
+                "NL",
+                "51.78619384765625",
+                "4.4376983642578125"
+                ).toDelimitedString("><#><"),
+                out.get(0).toDelimitedString("><#><"));
         assertEquals(tuple(
                 "80.100.47.45",
                 "Netherlands",
