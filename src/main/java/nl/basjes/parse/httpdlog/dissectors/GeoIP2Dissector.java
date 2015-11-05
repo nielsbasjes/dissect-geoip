@@ -99,10 +99,10 @@ public class GeoIP2Dissector extends AbstractGeoIPDissector {
         Location location = response.getLocation();
         if (location != null) {
             if (wantLocationLatitude) {
-                parsable.addDissection(inputname, "STRING", "location.latitude", Double.toString(location.getLatitude()));
+                parsable.addDissection(inputname, "STRING", "location.latitude", location.getLatitude());
             }
             if (wantLocationLongitude) {
-                parsable.addDissection(inputname, "STRING", "location.longitude", Double.toString(location.getLongitude()));
+                parsable.addDissection(inputname, "STRING", "location.longitude", location.getLongitude());
             }
             if (wantLocationTimezone) {
                 parsable.addDissection(inputname, "STRING", "location.timezone", location.getTimeZone());

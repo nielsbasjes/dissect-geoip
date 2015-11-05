@@ -31,6 +31,8 @@
         <jdkLevel>1.7</jdkLevel>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
+        <parser.version>2.4-SNAPSHOT</parser.version>
+
     </properties>
 
     <dependencies>
@@ -38,7 +40,7 @@
         <dependency>
             <groupId>nl.basjes.parse</groupId>
             <artifactId>parser-core</artifactId>
-            <version>2.3</version>
+            <version>${parser.version}</version>
         </dependency>
 
         <dependency>
@@ -59,10 +61,33 @@
             <version>1.7.5</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>nl.basjes.parse.httpdlog</groupId>
+            <artifactId>httpdlog-pigloader</artifactId>
+            <version>${parser.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.pig</groupId>
+            <artifactId>pig</artifactId>
+            <version>0.14.0</version>
+            <classifier>h2</classifier>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-client</artifactId>
+            <version>2.3.0</version>
             <scope>test</scope>
         </dependency>
 
