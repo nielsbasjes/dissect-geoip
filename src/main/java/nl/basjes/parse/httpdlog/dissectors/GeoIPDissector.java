@@ -63,10 +63,10 @@ public class GeoIPDissector extends AbstractGeoIPDissector {
             parsable.addDissection(inputname, "STRING", "postal.code", location.postalCode);
         }
         if (wantLocationLatitude) {
-            parsable.addDissection(inputname, "STRING", "location.latitude", Double.valueOf(location.latitude));
+            parsable.addDissection(inputname, "STRING", "location.latitude", location.latitude);
         }  // 44.9733
         if (wantLocationLongitude) {
-            parsable.addDissection(inputname, "STRING", "location.longitude", Double.valueOf(location.longitude));
+            parsable.addDissection(inputname, "STRING", "location.longitude", location.longitude);
         } // -93.2323
     }
 }
