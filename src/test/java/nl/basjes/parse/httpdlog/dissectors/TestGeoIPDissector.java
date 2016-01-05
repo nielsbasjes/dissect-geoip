@@ -69,52 +69,24 @@ public class TestGeoIPDissector {
 
     }
 
-    static class TestGeoIPParser extends Parser<MyRecord>{
-        public TestGeoIPParser() {
-            super(MyRecord.class);
-            GeoIPDissector dissector = new GeoIPDissector();
-            dissector.initializeFromSettingsParameter("/usr/share/GeoIP/GeoIPCity.dat");
-            addDissector(dissector);
-            setRootType("IP");
-        }
-    }
-
     static class TestGeoIP2Parser extends Parser<MyRecord>{
         public TestGeoIP2Parser() {
             super(MyRecord.class);
             GeoIP2Dissector dissector = new GeoIP2Dissector();
-            dissector.initializeFromSettingsParameter("/home/niels/tmp/GeoLite2-City.mmdb");
+            dissector.initializeFromSettingsParameter("/var/lib/GeoIP/GeoLite2-City.mmdb");
             addDissector(dissector);
             setRootType("IP");
         }
     }
 
-    private static TestGeoIPParser parser1;
     private static TestGeoIP2Parser parser2;
     private static MyRecord record;
 
 
     @BeforeClass
     public static void setUp() throws ParseException, InvalidDissectorException, MissingDissectorsException, DissectionFailure {
-        parser1 = new TestGeoIPParser();
         parser2 = new TestGeoIP2Parser();
         record = new MyRecord();
-    }
-
-    @Test
-    public void testGeoIP1() throws Exception {
-        record.clear();
-        parser1.parse(record, "80.100.47.45");
-
-        System.out.print(record.sResults);
-        assertEquals("STRING:country.name",        "Netherlands", record.getString("STRING:country.name"));
-        assertEquals("STRING:country.iso",         "NL", record.getString("STRING:country.iso"));
-        assertEquals("STRING:city.name",           null, record.getString("STRING:city.name"));
-        assertEquals("STRING:postal.code",         null, record.getString("STRING:postal.code"));
-        assertEquals("STRING:location.latitude",   "52.36669921875", record.getString("STRING:location.latitude"));
-        assertEquals("STRING:location.latitude",    52.36669921875, record.getDouble("STRING:location.latitude"), 0.0001);
-        assertEquals("STRING:location.longitude",   "4.899993896484375", record.getString("STRING:location.longitude"));
-        assertEquals("STRING:location.longitude",    4.899993896484375, record.getDouble("STRING:location.longitude"), 0.0001);
     }
 
     @Test

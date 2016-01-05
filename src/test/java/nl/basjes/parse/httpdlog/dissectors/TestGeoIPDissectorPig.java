@@ -45,7 +45,7 @@ public class TestGeoIPDissectorPig {
             "       USING nl.basjes.pig.input.apachehttpdlog.Loader(" +
             "               '" + logformat + "'," +
             "               'IP:connection.client.host'," +
-            "       '-load:nl.basjes.parse.httpdlog.dissectors.GeoIPDissector:/usr/share/GeoIP/GeoIPCity.dat'," +
+            "       '-load:nl.basjes.parse.httpdlog.dissectors.GeoIP2Dissector:/var/lib/GeoIP/GeoLite2-City.mmdb'," +
             "               'STRING:connection.client.host.country.name'," +
             "               'STRING:connection.client.host.country.iso'," +
             "               'STRING:connection.client.host.location.latitude'," +
@@ -68,16 +68,16 @@ public class TestGeoIPDissectorPig {
                 "178.208.38.98",
                 "Netherlands",
                 "NL",
-                "51.78619384765625",
-                "4.4376983642578125"
+                "52.3667",
+                "4.9"
                 ).toDelimitedString("><#><"),
                 out.get(0).toDelimitedString("><#><"));
         assertEquals(tuple(
                 "80.100.47.45",
                 "Netherlands",
                 "NL",
-                "52.36669921875",
-                "4.899993896484375"
+                "52.3667",
+                "4.9"
                 ).toDelimitedString("><#><"),
                 out.get(1).toDelimitedString("><#><"));
 
