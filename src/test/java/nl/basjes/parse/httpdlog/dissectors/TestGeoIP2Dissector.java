@@ -95,31 +95,31 @@ public class TestGeoIP2Dissector {
         record.clear();
         parser2.parse(record, "80.100.47.45");
         assertEquals("STRING:country.name",        "Netherlands", record.getString("STRING:country.name"));
-        assertEquals("STRING:country.iso",         "NL", record.getString("STRING:country.iso"));
-        assertEquals("STRING:subdivision.name",    null, record.getString("STRING:subdivision.name"));
-        assertEquals("STRING:subdivision.iso",     null, record.getString("STRING:subdivision.iso"));
-        assertEquals("STRING:city.name",           null, record.getString("STRING:city.name"));
-        assertEquals("STRING:postal.code",         null, record.getString("STRING:postal.code"));
-        assertEquals("STRING:location.latitude",   "52.3667", record.getString("STRING:location.latitude"));
-        assertEquals("STRING:location.latitude",   52.3667, record.getDouble("STRING:location.latitude"), 0.0001);
-        assertEquals("STRING:location.longitude",   "4.9", record.getString("STRING:location.longitude"));
-        assertEquals("STRING:location.longitude",   4.899994, record.getDouble("STRING:location.longitude"), 0.0001);
+        assertEquals("STRING:country.iso",         "NL",          record.getString("STRING:country.iso"));
+        assertEquals("STRING:subdivision.name",    null,          record.getString("STRING:subdivision.name"));
+        assertEquals("STRING:subdivision.iso",     null,          record.getString("STRING:subdivision.iso"));
+        assertEquals("STRING:city.name",           null,          record.getString("STRING:city.name"));
+        assertEquals("STRING:postal.code",         null,          record.getString("STRING:postal.code"));
+        assertEquals("STRING:location.latitude",   "52.3667",     record.getString("STRING:location.latitude"));
+        assertEquals("STRING:location.latitude",   52.3667,       record.getDouble("STRING:location.latitude"), 0.0001);
+        assertEquals("STRING:location.longitude",   "4.9",        record.getString("STRING:location.longitude"));
+        assertEquals("STRING:location.longitude",   4.899994,     record.getDouble("STRING:location.longitude"), 0.0001);
     }
 
     @Test
     public void testGeoIP2Failures1() throws Exception {
         record.clear();
         parser2.parse(record, "127.0.0.1");  // Not in database --> should result in null
-        assertEquals("STRING:country.name",        null, record.getString("STRING:country.name"));
-        assertEquals("STRING:country.iso",         null, record.getString("STRING:country.iso"));
-        assertEquals("STRING:subdivision.name",    null, record.getString("STRING:subdivision.name"));
-        assertEquals("STRING:subdivision.iso",     null, record.getString("STRING:subdivision.iso"));
-        assertEquals("STRING:city.name",           null, record.getString("STRING:city.name"));
-        assertEquals("STRING:postal.code",         null, record.getString("STRING:postal.code"));
-        assertEquals("STRING:location.latitude",   null, record.getString("STRING:location.latitude"));
-        assertEquals("STRING:location.latitude",   null, record.getDouble("STRING:location.latitude"));
-        assertEquals("STRING:location.longitude",  null, record.getString("STRING:location.longitude"));
-        assertEquals("STRING:location.longitude",  null, record.getDouble("STRING:location.longitude"));
+        assertEquals("STRING:country.name",        null,          record.getString("STRING:country.name"));
+        assertEquals("STRING:country.iso",         null,          record.getString("STRING:country.iso"));
+        assertEquals("STRING:subdivision.name",    null,          record.getString("STRING:subdivision.name"));
+        assertEquals("STRING:subdivision.iso",     null,          record.getString("STRING:subdivision.iso"));
+        assertEquals("STRING:city.name",           null,          record.getString("STRING:city.name"));
+        assertEquals("STRING:postal.code",         null,          record.getString("STRING:postal.code"));
+        assertEquals("STRING:location.latitude",   null,          record.getString("STRING:location.latitude"));
+        assertEquals("STRING:location.latitude",   null,          record.getDouble("STRING:location.latitude"));
+        assertEquals("STRING:location.longitude",  null,          record.getString("STRING:location.longitude"));
+        assertEquals("STRING:location.longitude",  null,          record.getDouble("STRING:location.longitude"));
     }
 
 }
