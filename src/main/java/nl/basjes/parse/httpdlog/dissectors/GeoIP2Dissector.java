@@ -154,7 +154,7 @@ public class GeoIP2Dissector extends Dissector {
             return; // Nothing to do here
         }
 
-        InetAddress ipAddress = null;
+        InetAddress ipAddress;
         try {
             ipAddress = InetAddress.getByName(fieldValue);
             if (ipAddress == null) {
@@ -165,7 +165,7 @@ public class GeoIP2Dissector extends Dissector {
         }
 
         // City is the 'Country' + more details.
-        CityResponse response = null;
+        CityResponse response;
         try {
             response = reader.city(ipAddress);
         } catch (IOException | GeoIp2Exception e) {

@@ -29,7 +29,7 @@ import static org.apache.pig.builtin.mock.Storage.resetData;
 import static org.apache.pig.builtin.mock.Storage.tuple;
 import static org.junit.Assert.assertEquals;
 
-public class TestGeoIPDissectorPig {
+public class TestGeoIP2DissectorPig {
 
     private static final String logformat = "%h";
     private final String logfile = getClass().getResource("/ip.log").toString();
