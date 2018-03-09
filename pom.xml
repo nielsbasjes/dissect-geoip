@@ -18,113 +18,107 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <groupId>nl.basjes.parse.httpdlog</groupId>
-    <version>1.0-SNAPSHOT</version>
+  <groupId>nl.basjes.parse.httpdlog</groupId>
+  <version>1.0-SNAPSHOT</version>
 
-    <artifactId>dissect-geoip</artifactId>
-    <name>GeoIP Dissector</name>
-    <url>http://niels.basjes.nl</url>
+  <artifactId>dissect-geoip</artifactId>
+  <name>GeoIP Dissector</name>
+  <url>http://niels.basjes.nl</url>
 
-    <properties>
-        <jdkLevel>1.7</jdkLevel>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
-        <parser.version>2.4-SNAPSHOT</parser.version>
+  <properties>
+    <jdkLevel>1.7</jdkLevel>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
+    <parser.version>5.0</parser.version>
+  </properties>
 
-    </properties>
+  <dependencies>
 
-    <dependencies>
+    <dependency>
+      <groupId>nl.basjes.parse</groupId>
+      <artifactId>parser-core</artifactId>
+      <version>${parser.version}</version>
+    </dependency>
 
-        <dependency>
-            <groupId>nl.basjes.parse</groupId>
-            <artifactId>parser-core</artifactId>
-            <version>${parser.version}</version>
-        </dependency>
+    <dependency>
+      <groupId>nl.basjes.parse</groupId>
+      <artifactId>parser-core</artifactId>
+      <version>${parser.version}</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>com.maxmind.geoip</groupId>
-            <artifactId>geoip-api</artifactId>
-            <version>1.2.14</version>
-        </dependency>
+    <!--<dependency>-->
+      <!--<groupId>com.maxmind.geoip</groupId>-->
+      <!--<artifactId>geoip-api</artifactId>-->
+      <!--<version>1.2.15</version>-->
+    <!--</dependency>-->
 
-        <dependency>
-            <groupId>com.maxmind.geoip2</groupId>
-            <artifactId>geoip2</artifactId>
-            <version>2.5.0</version>
-        </dependency>
+    <dependency>
+      <groupId>com.maxmind.geoip2</groupId>
+      <artifactId>geoip2</artifactId>
+      <version>2.11.0</version>
+    </dependency>
 
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.5</version>
-            <scope>test</scope>
-        </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-            <scope>test</scope>
-        </dependency>
+    <dependency>
+      <groupId>nl.basjes.parse.httpdlog</groupId>
+      <artifactId>httpdlog-pigloader</artifactId>
+      <version>${parser.version}</version>
+      <scope>test</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>nl.basjes.parse.httpdlog</groupId>
-            <artifactId>httpdlog-pigloader</artifactId>
-            <version>${parser.version}</version>
-            <scope>test</scope>
-        </dependency>
+    <dependency>
+      <groupId>org.apache.pig</groupId>
+      <artifactId>pig</artifactId>
+      <version>0.17.0</version>
+      <scope>test</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>org.apache.pig</groupId>
-            <artifactId>pig</artifactId>
-            <version>0.14.0</version>
-            <classifier>h2</classifier>
-            <scope>test</scope>
-        </dependency>
+    <dependency>
+      <groupId>org.apache.hadoop</groupId>
+      <artifactId>hadoop-client</artifactId>
+      <version>2.7.3</version>
+      <scope>test</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-client</artifactId>
-            <version>2.3.0</version>
-            <scope>test</scope>
-        </dependency>
+    <dependency>
+      <groupId>org.python</groupId>
+      <artifactId>jython-standalone</artifactId>
+      <version>2.7.0</version>
+      <scope>test</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-common</artifactId>
-            <version>2.3.0</version>
-        </dependency>
+  </dependencies>
 
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-collections4</artifactId>
-            <version>4.1</version>
-        </dependency>
+  <build>
+    <plugins>
 
-    </dependencies>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.0</version>
+        <configuration>
+          <source>${jdkLevel}</source>
+          <target>${jdkLevel}</target>
+        </configuration>
+      </plugin>
 
-    <build>
-        <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.1.2</version>
+      </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.0</version>
-                <configuration>
-                    <source>${jdkLevel}</source>
-                    <target>${jdkLevel}</target>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>2.1.2</version>
-            </plugin>
-
-        </plugins>
-    </build>
+    </plugins>
+  </build>
 
 </project>

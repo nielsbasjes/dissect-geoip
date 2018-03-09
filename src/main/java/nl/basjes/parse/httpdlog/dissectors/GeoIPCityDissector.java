@@ -16,52 +16,28 @@
  */
 package nl.basjes.parse.httpdlog.dissectors;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ContainerNode;
-import com.maxmind.db.NodeCache;
-import com.maxmind.db.Reader;
-import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
+import com.maxmind.geoip2.model.AbstractCityResponse;
 import com.maxmind.geoip2.model.CityResponse;
-import com.maxmind.geoip2.record.*;
+import com.maxmind.geoip2.record.City;
+import com.maxmind.geoip2.record.Location;
+import com.maxmind.geoip2.record.Postal;
+import com.maxmind.geoip2.record.Subdivision;
 import nl.basjes.parse.core.Casts;
-import nl.basjes.parse.core.Dissector;
 import nl.basjes.parse.core.Parsable;
-import nl.basjes.parse.core.ParsedField;
 import nl.basjes.parse.core.exceptions.DissectionFailure;
-import org.apache.commons.collections4.map.LRUMap;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FSDataInputStream;
-import org.apache.hadoop.fs.Path;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-public class GeoIP2Dissector extends Dissector {
-
-    private static final int LRU_CACHE_SIZE = 8192;
-
-    private static final String INPUT_TYPE = "IP";
-
-    private String databaseFileName;
-
-    @Override
-    public String getInputType() {
-        return INPUT_TYPE;
-    }
-
-    // --------------------------------------------
+public class GeoIPCityDissector extends GeoIPCountryDissector {
 
     @Override
     public List<String> getPossibleOutput() {
-        List<String> result = new ArrayList<>();
+        List<String> result = super.getPossibleOutput();
 
-        result.add("STRING:country.name");
-        result.add("STRING:country.iso");
         result.add("STRING:subdivision.name");
         result.add("STRING:subdivision.iso");
         result.add("STRING:city.name");
@@ -72,23 +48,6 @@ public class GeoIP2Dissector extends Dissector {
         return result;
     }
 
-    // --------------------------------------------
-
-    @Override
-    public boolean initializeFromSettingsParameter(String settings) {
-        databaseFileName = settings;
-        return true; // Everything went right.
-    }
-
-    // --------------------------------------------
-
-    @Override
-    protected void initializeNewInstance(Dissector newInstance) {
-        newInstance.initializeFromSettingsParameter(databaseFileName);
-    }
-
-    boolean wantCountryName = false;
-    boolean wantCountryIso = false;
     boolean wantSubdivisionName = false;
     boolean wantSubdivisionIso = false;
     boolean wantCityName = false;
@@ -99,19 +58,16 @@ public class GeoIP2Dissector extends Dissector {
 
     @Override
     public EnumSet<Casts> prepareForDissect(final String inputname, final String outputname) {
+        EnumSet<Casts> result = super.prepareForDissect(inputname, outputname);
+        if (result != null) {
+            return result;
+        }
+
         String name = outputname;
         if (!inputname.isEmpty()) {
             name = outputname.substring(inputname.length() + 1);
         }
 
-        if ("country.name".equals(name)) {
-            wantCountryName = true;
-            return Casts.STRING_ONLY;
-        }
-        if ("country.iso".equals(name)) {
-            wantCountryIso = true;
-            return Casts.STRING_ONLY;
-        }
         if ("subdivision.name".equals(name)) {
             wantSubdivisionName = true;
             return Casts.STRING_ONLY;
@@ -145,25 +101,7 @@ public class GeoIP2Dissector extends Dissector {
 
     // --------------------------------------------
 
-    @Override
-    public void dissect(final Parsable<?> parsable, final String inputname) throws DissectionFailure {
-        final ParsedField field = parsable.getParsableField(INPUT_TYPE, inputname);
-
-        String fieldValue = field.getValue().getString();
-        if (fieldValue == null || fieldValue.isEmpty()) {
-            return; // Nothing to do here
-        }
-
-        InetAddress ipAddress;
-        try {
-            ipAddress = InetAddress.getByName(fieldValue);
-            if (ipAddress == null) {
-                return;
-            }
-        } catch (UnknownHostException e) {
-            return;
-        }
-
+    public void dissect(final Parsable<?> parsable, final String inputname, final InetAddress ipAddress) throws DissectionFailure {
         // City is the 'Country' + more details.
         CityResponse response;
         try {
@@ -176,16 +114,11 @@ public class GeoIP2Dissector extends Dissector {
             return;
         }
 
-        Country country = response.getCountry();
-        if (country != null) {
-            if (wantCountryName) {
-                parsable.addDissection(inputname, "STRING", "country.name", country.getName());
-            }
-            if (wantCountryIso) {
-                parsable.addDissection(inputname, "STRING", "country.iso", country.getIsoCode());
-            }
-        }
+        extractCountryFields(parsable, inputname, response);
+        extractCityFields(parsable, inputname, response);
+    }
 
+    protected void extractCityFields(final Parsable<?> parsable, final String inputname, AbstractCityResponse response) throws DissectionFailure {
         Subdivision subdivision = response.getMostSpecificSubdivision();
         if (subdivision != null) {
             if (wantSubdivisionName) {
@@ -226,50 +159,4 @@ public class GeoIP2Dissector extends Dissector {
 
     // --------------------------------------------
 
-    private DatabaseReader reader;
-
-    @Override
-    public void prepareForRun() {
-        // A filename pointing to your GeoIP2 or GeoLite2 database file
-        Path databaseFilePath = new Path(databaseFileName);
-        Configuration configuration = new Configuration();
-        try {
-            FSDataInputStream dataInputStream = databaseFilePath
-                    .getFileSystem(configuration)
-                    .open(databaseFilePath);
-
-            reader = new DatabaseReader
-                    .Builder(dataInputStream)
-                    .fileMode(Reader.FileMode.MEMORY)
-                    .withCache(new LRUCache(LRU_CACHE_SIZE))
-                    .build();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // --------------------------------------------
-
-    private class LRUCache implements NodeCache {
-
-        private final LRUMap<Integer, JsonNode> cache;
-
-        public LRUCache(int capacity) {
-            this.cache = new LRUMap<>(capacity);
-        }
-
-        @Override
-        public JsonNode get(int key, Loader loader) throws IOException {
-            Integer k = key;
-            JsonNode value = cache.get(k);
-            if (value == null) {
-                value = loader.load(key);
-                cache.put(k, value);
-            }
-            if (value instanceof ContainerNode) {
-                value = value.deepCopy();
-            }
-            return value;
-        }
-    }
 }
