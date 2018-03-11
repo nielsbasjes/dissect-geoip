@@ -1,3 +1,10 @@
+@@@@ DEPRECATED @@@@
+===
+The code in this repo has been included into the main codebase of the logparser project.
+This repo is no longer maintained.
+
+-----
+
 Dissect IP using GeoIP2 information
 ===
 This project is a custom dissector for [LogParser](https://github.com/nielsbasjes/logparser) that uses
